@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WentworthGuidanceApp</string>
+    <string name="newActivity">Activity 3 Button</string>
 </resources>
