@@ -2,5 +2,8 @@
     <string name="app_name">WentworthGuidanceApp</string>
     <string name="option1">NFC Connect</string>
     <string name="option2">View Map</string>
-    <string name ="mapPlaceholder">This is the Map View</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Welcome to Wentworth!</string>
+    <string name="action_settings">Hello</string>
 </resources>
