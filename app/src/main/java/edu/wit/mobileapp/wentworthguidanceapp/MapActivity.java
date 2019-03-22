@@ -1,12 +1,16 @@
 package edu.wit.mobileapp.wentworthguidanceapp;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -27,6 +31,7 @@ public class MapActivity extends AppCompatActivity
     private List<ScanResult> results;
     private ArrayList<String> ssidList = new ArrayList<>();
 
+
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -35,6 +40,7 @@ public class MapActivity extends AppCompatActivity
             Log.d("SCAN RESULT SIZE", "Size" + results.size());
             for(ScanResult scanResult : results){
                 Log.d("SCCCCAAAAAANNNN RESULT", scanResult.SSID);
+                Log.d("SCCCCAAAAAANNNN RESULT", "SSID = \"" + scanResult.SSID + "\", SignalStrength = " + scanResult.level + " dBm, Frequency = " + scanResult.frequency + "MHz");
                 ssidList.add(scanResult.SSID);
                 Log.d("SCCCCAAAAAANNNN RESULT", "Completed");
             }
@@ -106,7 +112,7 @@ public class MapActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_slideshow) {
-
+            scanWifi();
         } else if (id == R.id.nav_manage) {
 
         }
@@ -122,6 +128,20 @@ public class MapActivity extends AppCompatActivity
             drawer.openDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private Coord calculatePosition(int DSSI1, int DSSI2, int DSSI3) {
+        return new Coord(0, 0);
+
+    }
+
+    private class Coord {
+        public int x;
+        public int y;
+        public Coord(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 }
