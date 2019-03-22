@@ -1,6 +1,13 @@
 package edu.wit.mobileapp.wentworthguidanceapp;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,10 +15,32 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
     NavigationView navigationView;
+    private WifiManager wifiManager;
+    private List<ScanResult> results;
+    private ArrayList<String> ssidList = new ArrayList<>();
+
+    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            results = wifiManager.getScanResults();
+            unregisterReceiver(this);
+            Log.d("SCAN RESULT SIZE", "Size" + results.size());
+            for(ScanResult scanResult : results){
+                Log.d("SCCCCAAAAAANNNN RESULT", scanResult.SSID);
+                ssidList.add(scanResult.SSID);
+                Log.d("SCCCCAAAAAANNNN RESULT", "Completed");
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +49,22 @@ public class MapActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+        if(!wifiManager.isWifiEnabled()){
+            Toast.makeText(this, "Wifi is disabled... enable wifi....", Toast.LENGTH_LONG).show();
+            wifiManager.setWifiEnabled(true);
+        }
+
+        scanWifi();
+    }
+
+    private  void scanWifi(){
+        ssidList.clear();
+        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        wifiManager.startScan();
+        Toast.makeText(this, "Scanning Wifi.....", Toast.LENGTH_SHORT).show();
     }
 
     @Override
