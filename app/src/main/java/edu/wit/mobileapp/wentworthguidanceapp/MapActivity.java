@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -114,7 +116,7 @@ public class MapActivity extends AppCompatActivity
         if (id == R.id.nav_slideshow) {
             scanWifi();
         } else if (id == R.id.nav_manage) {
-
+            calculatePosition(0,0,0);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -132,6 +134,17 @@ public class MapActivity extends AppCompatActivity
     }
 
     private Coord calculatePosition(int DSSI1, int DSSI2, int DSSI3) {
+
+
+        ImageView marker = (ImageView) findViewById(R.id.marker);
+        double locationX = 4.0;
+        double locationY = 4.0;
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) marker.getLayoutParams();
+        params.horizontalBias = (float) (locationX/16.0); // here is one modification for example. modify anything else you want :)
+        params.verticalBias = (float) (locationY/16.0);
+        marker.setLayoutParams(params); // request the view to use the new modified params
+
+
         return new Coord(0, 0);
 
     }
