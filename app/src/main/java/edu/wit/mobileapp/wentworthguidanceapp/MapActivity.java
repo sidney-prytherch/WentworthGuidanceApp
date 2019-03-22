@@ -1,17 +1,14 @@
 package edu.wit.mobileapp.wentworthguidanceapp;
 
-import android.Manifest;
+import android.animation.LayoutTransition;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -21,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,12 +37,12 @@ public class MapActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             results = wifiManager.getScanResults();
             unregisterReceiver(this);
-            Log.d("SCAN RESULT SIZE", "Size" + results.size());
+            Log.d("myapp", "Size" + results.size());
             for(ScanResult scanResult : results){
-                Log.d("SCCCCAAAAAANNNN RESULT", scanResult.SSID);
-                Log.d("SCCCCAAAAAANNNN RESULT", "SSID = \"" + scanResult.SSID + "\", SignalStrength = " + scanResult.level + " dBm, Frequency = " + scanResult.frequency + "MHz");
+                Log.d("myapp", scanResult.SSID);
+                Log.d("myapp", "SSID = \"" + scanResult.SSID + "\", SignalStrength = " + scanResult.level + " dBm, Frequency = " + scanResult.frequency + "MHz");
                 ssidList.add(scanResult.SSID);
-                Log.d("SCCCCAAAAAANNNN RESULT", "Completed");
+                Log.d("myapp", "Completed");
             }
         }
     };
@@ -54,6 +52,9 @@ public class MapActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        ((ViewGroup) findViewById(R.id.constraintLayout)).getLayoutTransition()
+            .enableTransitionType(LayoutTransition.CHANGING);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
