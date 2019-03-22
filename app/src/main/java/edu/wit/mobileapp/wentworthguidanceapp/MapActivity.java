@@ -30,8 +30,7 @@ public class MapActivity extends AppCompatActivity
     private WifiManager wifiManager;
     private List<ScanResult> results;
     private ArrayList<String> ssidList = new ArrayList<>();
-    private final int REQUEST_PERMISSION_PHONE_STATE = 1;
-    private final int REQUEST_PERMISSION_PHONE_STATE_2 = 1;
+
 
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
@@ -115,22 +114,7 @@ public class MapActivity extends AppCompatActivity
         if (id == R.id.nav_slideshow) {
             scanWifi();
         } else if (id == R.id.nav_manage) {
-            if (ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_WIFI_STATE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MapActivity.this, new String[]{
-                        Manifest.permission.ACCESS_WIFI_STATE}, REQUEST_PERMISSION_PHONE_STATE
-                );
-            } else {
-                Toast.makeText(MapActivity.this, "Permission (already) Granted!", Toast.LENGTH_SHORT).show();
-            }
-            if (ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MapActivity.this, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_PHONE_STATE_2
-                );
-            } else {
-                Toast.makeText(MapActivity.this, "Permission (already) Granted!", Toast.LENGTH_SHORT).show();
-            }
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -144,6 +128,20 @@ public class MapActivity extends AppCompatActivity
             drawer.openDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private Coord calculatePosition(int DSSI1, int DSSI2, int DSSI3) {
+        return new Coord(0, 0);
+
+    }
+
+    private class Coord {
+        public int x;
+        public int y;
+        public Coord(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 }
