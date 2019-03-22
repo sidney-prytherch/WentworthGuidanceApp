@@ -1,12 +1,16 @@
 package edu.wit.mobileapp.wentworthguidanceapp;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -26,6 +30,8 @@ public class MapActivity extends AppCompatActivity
     private WifiManager wifiManager;
     private List<ScanResult> results;
     private ArrayList<String> ssidList = new ArrayList<>();
+    private final int REQUEST_PERMISSION_PHONE_STATE = 1;
+    private final int REQUEST_PERMISSION_PHONE_STATE_2 = 1;
 
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
@@ -35,6 +41,7 @@ public class MapActivity extends AppCompatActivity
             Log.d("SCAN RESULT SIZE", "Size" + results.size());
             for(ScanResult scanResult : results){
                 Log.d("SCCCCAAAAAANNNN RESULT", scanResult.SSID);
+                Log.d("SCCCCAAAAAANNNN RESULT", "SSID = \"" + scanResult.SSID + "\", SignalStrength = " + scanResult.level + " dBm, Frequency = " + scanResult.frequency + "MHz");
                 ssidList.add(scanResult.SSID);
                 Log.d("SCCCCAAAAAANNNN RESULT", "Completed");
             }
@@ -106,9 +113,24 @@ public class MapActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_slideshow) {
-
+            scanWifi();
         } else if (id == R.id.nav_manage) {
-
+            if (ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_WIFI_STATE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MapActivity.this, new String[]{
+                        Manifest.permission.ACCESS_WIFI_STATE}, REQUEST_PERMISSION_PHONE_STATE
+                );
+            } else {
+                Toast.makeText(MapActivity.this, "Permission (already) Granted!", Toast.LENGTH_SHORT).show();
+            }
+            if (ContextCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MapActivity.this, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_PHONE_STATE_2
+                );
+            } else {
+                Toast.makeText(MapActivity.this, "Permission (already) Granted!", Toast.LENGTH_SHORT).show();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
