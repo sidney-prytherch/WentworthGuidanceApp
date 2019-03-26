@@ -134,6 +134,27 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
+    private double calculateDistance(double db, double freq){
+        return 20 * (Math.log10(freq) + Math.abs(db)) - 27.55;
+    }
+
+    private Coord getCordinate(double x1, double y1, double r1,
+                                double x2, double y2, double r2,
+                                double x3, double y3, double r3){
+        //double identity[][] =  {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+
+        double delta = 4 * (((x1 - x2) * (y1-y2)) - ((x1-x3) * (y1 - y2)));
+        double a = Math.pow(r2,2) - Math.pow(r1,2) - Math.pow(x2,2) + Math.pow(x1,2) - Math.pow(y2,2) + Math.pow(y1,2) ;
+        double b = Math.pow(r3,2) - Math.pow(r1,2) - Math.pow(x3,2) + Math.pow(x1,2) - Math.pow(y3,2) + Math.pow(y1,2) ;
+
+        double x = (1/delta) * (2 * a *(y1-y3) - 2 * b * (y1-y2));
+        double y = (1/delta) * (2 * b *(x1-x2) - 2 * a * (x1-x2));
+
+        Coord coord = new Coord((int)x, (int)y);
+
+        return coord;
+    }
+
     private Coord calculatePosition(int DSSI1, int DSSI2, int DSSI3) {
 
 
