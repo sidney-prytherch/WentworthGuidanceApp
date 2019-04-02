@@ -11,22 +11,47 @@
     tools:showIn="@layout/app_bar_map">
 
     <ImageView
-        android:id="@+id/map_view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/map_with_grid"
+        app:layout_constraintBottom_toBottomOf="@id/buttonTableLayout"
+        app:layout_constraintTop_toTopOf="@id/buttonTableLayout"
+        app:layout_constraintStart_toStartOf="@id/buttonTableLayout"
+        app:layout_constraintEnd_toEndOf="@id/buttonTableLayout"/>
+
+    <TableLayout
+        android:id="@+id/buttonTableLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
-        android:scaleType="fitXY"
         android:padding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/map" />
+        app:layout_constraintTop_toBottomOf="@id/search_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+        <TableRow android:padding="0dp" android:layout_margin="0dp"/>
+    </TableLayout>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:paddingStart="8dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="8dp"
+        android:layout_height="70dp"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -67,11 +92,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/map_view"
-        app:layout_constraintEnd_toEndOf="@id/map_view"
+        app:layout_constraintBottom_toBottomOf="@id/buttonTableLayout"
+        app:layout_constraintEnd_toEndOf="@id/buttonTableLayout"
         app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintStart_toStartOf="@id/map_view"
-        app:layout_constraintTop_toTopOf="@id/map_view"
+        app:layout_constraintStart_toStartOf="@id/buttonTableLayout"
+        app:layout_constraintTop_toTopOf="@id/buttonTableLayout"
         app:layout_constraintVertical_bias="1"
         app:srcCompat="@drawable/ic_person_pin_circle_black_24dp" />
 
