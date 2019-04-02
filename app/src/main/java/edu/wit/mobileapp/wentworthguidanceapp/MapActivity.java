@@ -264,7 +264,7 @@ public class MapActivity extends AppCompatActivity
                     GridNodePathData nextPath = optimalPaths[nextNode.x][nextNode.y];
                     currentPath = nextPath;
                 }
-                if (currentLocation.x != currentPath.gridNode.x && currentLocation.y != currentPath.gridNode.y) {
+                if (currentLocation.x != currentPath.gridNode.x || currentLocation.y != currentPath.gridNode.y) {
                     this.printArrows(currentPath);
                 }
             }
