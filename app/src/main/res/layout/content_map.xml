@@ -13,7 +13,7 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/map_without_grid"
+        android:background="@drawable/map_with_grid"
         app:layout_constraintBottom_toBottomOf="@id/buttonTableLayout"
         app:layout_constraintTop_toTopOf="@id/buttonTableLayout"
         app:layout_constraintStart_toStartOf="@id/buttonTableLayout"
