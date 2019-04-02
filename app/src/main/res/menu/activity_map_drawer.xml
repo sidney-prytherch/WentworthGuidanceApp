@@ -5,13 +5,164 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="View Projects" />
-        <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Settings" />
     </group>
+
+    <item android:title="Projects">
+        <menu>
+            <item
+                android:id="@+id/p1"
+                android:title="Project 1" />
+            <item
+                android:id="@+id/p2"
+                android:title="Project 2" />
+            <item
+                android:id="@+id/p3"
+                android:title="Project 3" />
+            <item
+                android:id="@+id/p4"
+                android:title="Project 4" />
+            <item
+                android:id="@+id/p5"
+                android:title="Project 5" />
+            <item
+                android:id="@+id/p6"
+                android:title="Project 6" />
+            <item
+                android:id="@+id/p7"
+                android:title="Project 7" />
+            <item
+                android:id="@+id/p8"
+                android:title="Project 8" />
+            <item
+                android:id="@+id/p9"
+                android:title="Project 9" />
+            <item
+                android:id="@+id/p10"
+                android:title="Project 10" />
+            <item
+                android:id="@+id/p11"
+                android:title="Project 11" />
+            <item
+                android:id="@+id/p12"
+                android:title="Project 12" />
+            <item
+                android:id="@+id/p13"
+                android:title="Project 13" />
+            <item
+                android:id="@+id/p14"
+                android:title="Project 14" />
+            <item
+                android:id="@+id/p15"
+                android:title="Project 15" />
+            <item
+                android:id="@+id/p16"
+                android:title="Project 16" />
+            <item
+                android:id="@+id/p17"
+                android:title="Project 17" />
+            <item
+                android:id="@+id/p18"
+                android:title="Project 18" />
+            <item
+                android:id="@+id/p19"
+                android:title="Project 19" />
+            <item
+                android:id="@+id/p20"
+                android:title="Project 20" />
+            <item
+                android:id="@+id/p21"
+                android:title="Project 21" />
+            <item
+                android:id="@+id/p22"
+                android:title="Project 22" />
+            <item
+                android:id="@+id/p23"
+                android:title="Project 23" />
+            <item
+                android:id="@+id/p24"
+                android:title="Project 24" />
+            <item
+                android:id="@+id/p25"
+                android:title="Project 25" />
+            <item
+                android:id="@+id/p26"
+                android:title="Project 26" />
+            <item
+                android:id="@+id/p27"
+                android:title="Project 27" />
+            <item
+                android:id="@+id/p28"
+                android:title="Project 28" />
+            <item
+                android:id="@+id/p29"
+                android:title="Project 29" />
+            <item
+                android:id="@+id/p30"
+                android:title="Project 30" />
+            <item
+                android:id="@+id/p31"
+                android:title="Project 31" />
+            <item
+                android:id="@+id/p32"
+                android:title="Project 32" />
+            <item
+                android:id="@+id/p33"
+                android:title="Project 33" />
+            <item
+                android:id="@+id/p34"
+                android:title="Project 34" />
+            <item
+                android:id="@+id/p35"
+                android:title="Project 35" />
+            <item
+                android:id="@+id/p36"
+                android:title="Project 36" />
+            <item
+                android:id="@+id/p37"
+                android:title="Project 37" />
+            <item
+                android:id="@+id/p38"
+                android:title="Project 38" />
+            <item
+                android:id="@+id/p39"
+                android:title="Project 39" />
+            <item
+                android:id="@+id/p40"
+                android:title="Project 40" />
+            <item
+                android:id="@+id/p41"
+                android:title="Project 41" />
+            <item
+                android:id="@+id/p42"
+                android:title="Project 42" />
+            <item
+                android:id="@+id/p43"
+                android:title="Project 43" />
+            <item
+                android:id="@+id/p44"
+                android:title="Project 44" />
+            <item
+                android:id="@+id/p45"
+                android:title="Project 45" />
+            <item
+                android:id="@+id/p46"
+                android:title="Project 46" />
+            <item
+                android:id="@+id/p47"
+                android:title="Project 47" />
+            <item
+                android:id="@+id/p48"
+                android:title="Project 48" />
+            <item
+                android:id="@+id/p49"
+                android:title="Project 49" />
+            <item
+                android:id="@+id/p50"
+                android:title="Project 50" />
+        </menu>
+    </item>
 
 </menu>

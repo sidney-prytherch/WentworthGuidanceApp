@@ -40,6 +40,7 @@ public class MapActivity extends AppCompatActivity
     private final short GRID_WIDTH = 12;
     private GridNode[][] grid = new GridNode[GRID_WIDTH][GRID_HEIGHT];
     private GridNodePathData[][] optimalPaths = new GridNodePathData[GRID_WIDTH][GRID_HEIGHT];
+    private GridNode[] projects;
     private GridNode currentLocation;
     private GridNode destination;
     private TableLayout buttonTableLayout;
@@ -88,6 +89,7 @@ public class MapActivity extends AppCompatActivity
 //        ConstraintLayout main = (ConstraintLayout) findViewById(R.id.constraintLayout);
 
         int projectID = 1;
+        ArrayList<GridNode> projects = new ArrayList<>();
 
         for (int row = 0; row < buttonTableLayout.getChildCount(); ++row) {
             ((TableRow) buttonTableLayout.getChildAt(row)).removeAllViews();
@@ -110,6 +112,7 @@ public class MapActivity extends AppCompatActivity
                                 (j == 11 && (i == 14 || (i > 1 && i < 12)))
                 ) {
                     grid[j][i] = new GridNode(j, i, projectID++, newGuessButton);
+                    projects.add(grid[j][i]);
                 } else {
                     grid[j][i] = new GridNode(j, i, newGuessButton);
                 }
@@ -117,6 +120,13 @@ public class MapActivity extends AppCompatActivity
                 currentTableRow.addView(newGuessButton);
             }
         }
+
+        GridNode[] projectsArray = new GridNode[projects.size()];
+        for (int i = 0; i < projects.size(); i++) {
+            projectsArray[i] = projects.get(i);
+        }
+
+        this.projects = projectsArray;
 
         for (int i = 0; i < GRID_WIDTH; i++) {
             for (int j = 0; j < GRID_HEIGHT; j++) {
@@ -140,13 +150,19 @@ public class MapActivity extends AppCompatActivity
         GridNode gridNode = ((SquareButton) v).getGridNode();
         if (gridNode.id != -1) {
             Toast.makeText(this, "Project: " + gridNode.id, Toast.LENGTH_SHORT).show();
-            destination = gridNode;
-            optimalPaths = new GridNodePathData[GRID_WIDTH][GRID_HEIGHT];
-            calculateRoutes();
+            setDestination(gridNode);
         } else {
             moveMarker(gridNode.x, gridNode.y);
             currentLocation = gridNode;
             paintPath();
+        }
+    }
+
+    private void setDestination(GridNode dest) {
+        this.destination = dest;
+        optimalPaths = new GridNodePathData[GRID_WIDTH][GRID_HEIGHT];
+        if (dest != null) {
+            calculateRoutes();
         }
     }
 
@@ -266,6 +282,8 @@ public class MapActivity extends AppCompatActivity
                 }
                 if (currentLocation.x != currentPath.gridNode.x || currentLocation.y != currentPath.gridNode.y) {
                     this.printArrows(currentPath);
+                } else {
+                    setDestination(null);
                 }
             }
         }
@@ -334,10 +352,12 @@ public class MapActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_slideshow) {
-            scanWifi();
-        } else if (id == R.id.nav_manage) {
+        if (id == R.id.nav_manage) {
             calculatePosition(0, 0, 0);
+        } else {
+            int projectNum = Integer.parseInt((item.getTitle().toString().split(" "))[1]) - 1;
+            Log.v("myapp", ""+projectNum);
+            setDestination(projects[projectNum]);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
