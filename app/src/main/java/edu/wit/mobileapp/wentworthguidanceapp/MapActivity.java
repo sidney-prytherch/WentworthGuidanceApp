@@ -91,8 +91,8 @@ public class MapActivity extends AppCompatActivity
 
             if (sidney != null && glenn != null && nischal != null) {
                 getCordinate(0, 0, calculateDistance(sidney.frequency, sidney.level),
-                        12, 5, calculateDistance(glenn.frequency, glenn.level),
-                        8, 16, calculateDistance(nischal.frequency, nischal.level));
+                        5, 15, calculateDistance(glenn.frequency, glenn.level),
+                        11, 0, calculateDistance(nischal.frequency, nischal.level));
             } else {
                 getCordinate(0, 0, 8,
                         11, 0, 4,
