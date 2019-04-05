@@ -25,6 +25,15 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Handler.Callback;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -46,23 +55,75 @@ public class MapActivity extends AppCompatActivity
     private TableLayout buttonTableLayout;
     private ImageView marker;
     private ConstraintLayout.LayoutParams markerParams;
-
+    Timer timer;
+    TimerTask timerTask;
+    final Handler handler = new Handler();
 
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             results = wifiManager.getScanResults();
             unregisterReceiver(this);
-            Log.d("myapp", "Size" + results.size());
+//            Log.d("myapp", "Size" + results.size());
+            ScanResult glenn = null;
+            ScanResult nischal = null;
+            ScanResult sidney = null;
             for (ScanResult scanResult : results) {
-                Log.d("myapp", scanResult.SSID);
-                Log.d("myapp", "SSID = \"" + scanResult.SSID + "\", SignalStrength = " + scanResult.level + " dBm, Frequency = " + scanResult.frequency + "MHz");
+                switch (scanResult.SSID) {
+                    case "TT-Linksys":
+                        glenn = scanResult;
+                        break;
+                    case "nischal":
+                        nischal = scanResult;
+                        break;
+                    case "sidney":
+                        sidney = scanResult;
+                        break;
+                    default:
+                        Log.v("thestuff", ""+scanResult.SSID);
+                        break;
+                }
+//                Log.d("myapp", scanResult.SSID);
+//                Log.d("myapp", "SSID = \"" + scanResult.SSID + "\", SignalStrength = " + scanResult.level + " dBm, Frequency = " + scanResult.frequency + "MHz");
                 ssidList.add(scanResult.SSID);
-                Log.d("myapp", "Completed");
+//                Log.d("myapp", "Completed");
+            }
+
+            if (sidney != null && glenn != null && nischal != null) {
+                getCordinate(0, 0, calculateDistance(sidney.frequency, sidney.level),
+                        12, 5, calculateDistance(glenn.frequency, glenn.level),
+                        8, 16, calculateDistance(nischal.frequency, nischal.level));
+            } else {
+                getCordinate(0, 0, 8,
+                        11, 0, 4,
+                        8, 15, 16);
             }
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startTimer();
+    }
+
+    public void startTimer() {
+        timer = new Timer();
+        initializeTimerTask();
+        timer.schedule(timerTask, 5000, 10000);
+    }
+
+    public void initializeTimerTask() {
+        timerTask = new TimerTask() {
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        scanWifi();
+                    }
+                });
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,10 +213,18 @@ public class MapActivity extends AppCompatActivity
             Toast.makeText(this, "Project: " + gridNode.id, Toast.LENGTH_SHORT).show();
             setDestination(gridNode);
         } else {
-            moveMarker(gridNode.x, gridNode.y);
-            currentLocation = gridNode;
-            paintPath();
+            updateLocation(gridNode);
         }
+    }
+
+    private void updateLocation(GridNode gridNode) {
+        moveMarker(gridNode.x, gridNode.y);
+        currentLocation = gridNode;
+        paintPath();
+    }
+
+    private void updateLocation(int x, int y) {
+        updateLocation(grid[x][y]);
     }
 
     private void setDestination(GridNode dest) {
@@ -226,7 +295,7 @@ public class MapActivity extends AppCompatActivity
                 }
                 str1 += "\n";
             }
-            Log.v("myapp", str1);
+//            Log.v("myapp", str1);
             String str2 = "a\n";
             for (int j = 0; j < GRID_HEIGHT; j++) {
                 for (int i = 0; i < GRID_WIDTH; i++) {
@@ -240,7 +309,7 @@ public class MapActivity extends AppCompatActivity
                 }
                 str2 += "\n";
             }
-            Log.v("myapp", str2);
+//            Log.v("myapp", str2);
             String str3 = "a\n";
             for (int j = 0; j < GRID_HEIGHT; j++) {
                 for (int i = 0; i < GRID_WIDTH; i++) {
@@ -256,7 +325,7 @@ public class MapActivity extends AppCompatActivity
                 }
                 str3 += "\n";
             }
-            Log.v("myapp", str3);
+//            Log.v("myapp", str3);
             paintPath();
         }
     }
@@ -352,11 +421,9 @@ public class MapActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_manage) {
-            calculatePosition(0, 0, 0);
-        } else {
+        if (id != R.id.nav_manage) {
             int projectNum = Integer.parseInt((item.getTitle().toString().split(" "))[1]) - 1;
-            Log.v("myapp", ""+projectNum);
+//            Log.v("myapp", ""+projectNum);
             setDestination(projects[projectNum]);
         }
 
@@ -381,7 +448,8 @@ public class MapActivity extends AppCompatActivity
     private Coord getCordinate(double x1, double y1, double r1,
                                double x2, double y2, double r2,
                                double x3, double y3, double r3) {
-        //double identity[][] =  {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+
+
 
         double delta = 4 * (((x1 - x2) * (y1 - y2)) - ((x1 - x3) * (y1 - y2)));
         double a = Math.pow(r2, 2) - Math.pow(r1, 2) - Math.pow(x2, 2) + Math.pow(x1, 2) - Math.pow(y2, 2) + Math.pow(y1, 2);
@@ -390,14 +458,33 @@ public class MapActivity extends AppCompatActivity
         double x = (1 / delta) * (2 * a * (y1 - y3) - 2 * b * (y1 - y2));
         double y = (1 / delta) * (2 * b * (x1 - x2) - 2 * a * (x1 - x2));
 
+        double x12 = x1 * x1;
+        double x22 = x2 * x2;
+        double x32 = x3 * x3;
+        double y12 = y1 * y1;
+        double y22 = y2 * y2;
+        double y32 = y3 * y3;
+        double r12 = r1 * r1;
+        double r22 = r2 * r2;
+        double r32 = r3 * r3;
+        double locy = ((x2 - x3)*((x22-x12)+(y22-y12)+(r12-r22))-(x1-x2) * ((x32-x22) + (y32-y22) + (r22-r32)))/(2 * ((y1-y2)*(x2-x3)-(y2-y3)*(x1-x2)));
+        double locx = ((y2 - y3)*((y22-y12)+(x22-x12)+(r12-r22))-(y1-y2) * ((y32-y22) + (x32-x22) + (r22-r32)))/(2 * ((x1-x2)*(y2-y3)-(x2-x3)*(y1-y2)));
+
+
+        Log.v("myapp", ""+locx);
+        Log.v("myapp", ""+locy);
+        Log.v("myapp", "" + r1 + ", " + r2 + ", " + r3);
+
+        x = Math.min(11, Math.max(0, (int) -locx));
+        y = Math.min(15, Math.max(0, (int) -locy));
+
+
+
+        updateLocation((int) x, (int) y);
+
         Coord coord = new Coord((int) x, (int) y);
 
         return coord;
-    }
-
-    private Coord calculatePosition(int DSSI1, int DSSI2, int DSSI3) {
-        moveMarker(4, 4);
-        return new Coord(0, 0);
     }
 
     public void moveMarker(double x, double y) {
