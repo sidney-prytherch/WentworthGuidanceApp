@@ -34,6 +34,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Handler.Callback;
+
+import com.lemmingapex.trilateration.NonLinearLeastSquaresSolver;
+import com.lemmingapex.trilateration.TrilaterationFunction;
+
+import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
+import org.apache.commons.math3.fitting.leastsquares.LevenbergMarquardtOptimizer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -90,11 +97,11 @@ public class MapActivity extends AppCompatActivity
             }
 
             if (sidney != null && glenn != null && nischal != null) {
-                getCordinate(0, 0, calculateDistance(sidney.frequency, sidney.level),
+                getLocation(0, 0, calculateDistance(sidney.frequency, sidney.level),
                         5, 15, calculateDistance(glenn.frequency, glenn.level),
                         11, 0, calculateDistance(nischal.frequency, nischal.level));
             } else {
-                getCordinate(0, 0, 8,
+                getLocation(0, 0, 8,
                         11, 0, 4,
                         8, 15, 16);
             }
@@ -486,6 +493,22 @@ public class MapActivity extends AppCompatActivity
 
         return coord;
     }
+
+    private Coord getLocation(double x1, double y1, double r1,
+                              double x2, double y2, double r2,
+                              double x3, double y3, double r3) {
+        double[][] positions = new double[][] { { x1, y1 }, {x2, y2 }, { x3, y3 } };
+        double[] distances = new double[] { r1, r2, r3 };
+
+        NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances), new LevenbergMarquardtOptimizer());
+        LeastSquaresOptimizer.Optimum optimum = solver.solve();
+
+// the answer
+        double[] centroid = optimum.getPoint().toArray();
+        Coord coord = new Coord((int)centroid[0], (int)centroid[1]);
+        return coord;
+    }
+
 
     public void moveMarker(double x, double y) {
         markerParams.horizontalBias = (float) (x / 11.0); // here is one modification for example. modify anything else you want :)
