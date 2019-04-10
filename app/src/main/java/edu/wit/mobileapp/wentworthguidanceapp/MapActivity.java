@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -87,7 +88,7 @@ public class MapActivity extends AppCompatActivity
                         sidney = scanResult;
                         break;
                     default:
-                        Log.v("thestuff", ""+scanResult.SSID);
+                        Log.v("thestuff", "" + scanResult.SSID);
                         break;
                 }
 //                Log.d("myapp", scanResult.SSID);
@@ -101,9 +102,9 @@ public class MapActivity extends AppCompatActivity
                         5, 15, calculateDistance(glenn.frequency, glenn.level),
                         11, 0, calculateDistance(nischal.frequency, nischal.level));
             } else {
-                getLocation(0, 0, 8,
-                        11, 0, 4,
-                        8, 15, 16);
+//                getLocation(0, 0, 8,
+//                        11, 0, 4,
+//                        8, 15, 16);
             }
         }
     };
@@ -297,42 +298,45 @@ public class MapActivity extends AppCompatActivity
                     } else if (optimalPaths[i][j] == null) {
                         str1 += "    ";
                     } else {
-                        str1 += (optimalPaths[i][j].distanceToDest < 10 ? "--" + optimalPaths[i][j].distanceToDest + "-" : "-" + optimalPaths[i][j].distanceToDest + "-");
+                        str1 += (optimalPaths[i][j].distanceToDest < 10 ? "| " + optimalPaths[i][j].distanceToDest + " " : "|" + optimalPaths[i][j].distanceToDest + " ");
+
                     }
                 }
                 str1 += "\n";
             }
-//            Log.v("myapp", str1);
+            Log.v("myapp", str1);
             String str2 = "a\n";
             for (int j = 0; j < GRID_HEIGHT; j++) {
                 for (int i = 0; i < GRID_WIDTH; i++) {
                     if (grid[i][j].isProject) {
-                        str2 += "███";
+                        str2 += "████";
                     } else if (optimalPaths[i][j] == null) {
-                        str2 += "   ";
+                        str2 += "    ";
                     } else {
-                        str2 += (optimalPaths[i][j].turnCountToDest < 10 ? "-" + optimalPaths[i][j].turnCountToDest + "-" : "-" + optimalPaths[i][j].turnCountToDest);
+                        str2 += (optimalPaths[i][j].turnCountToDest < 10 ? "| " + optimalPaths[i][j].turnCountToDest + " " : "| " + optimalPaths[i][j].turnCountToDest);
+
                     }
                 }
                 str2 += "\n";
             }
-//            Log.v("myapp", str2);
+            Log.v("myapp", str2);
             String str3 = "a\n";
             for (int j = 0; j < GRID_HEIGHT; j++) {
                 for (int i = 0; i < GRID_WIDTH; i++) {
                     if (grid[i][j].isProject) {
-                        str3 += "███";
+                        str3 += "████";
                     } else if (optimalPaths[i][j] == null) {
-                        str3 += "   ";
+                        str3 += "    ";
                     } else {
-                        str3 += (optimalPaths[i][j].direction == Direction.RIGHT ? " → " :
-                                optimalPaths[i][j].direction == Direction.DOWN ? " ↓ " :
-                                        optimalPaths[i][j].direction == Direction.UP ? " ↑ " : " ← ");
+                        str3 += (optimalPaths[i][j].direction == Direction.RIGHT ? "| → " :
+                                optimalPaths[i][j].direction == Direction.DOWN ? "| ↓ " :
+                                        optimalPaths[i][j].direction == Direction.UP ? "| ↑ " : "| ← ");
+
                     }
                 }
                 str3 += "\n";
             }
-//            Log.v("myapp", str3);
+            Log.v("myapp", str3);
             paintPath();
         }
     }
@@ -452,60 +456,77 @@ public class MapActivity extends AppCompatActivity
         return 20 * (Math.log10(freq) + Math.abs(db)) - 27.55;
     }
 
-    private Coord getCordinate(double x1, double y1, double r1,
-                               double x2, double y2, double r2,
-                               double x3, double y3, double r3) {
-
-
-
-        double delta = 4 * (((x1 - x2) * (y1 - y2)) - ((x1 - x3) * (y1 - y2)));
-        double a = Math.pow(r2, 2) - Math.pow(r1, 2) - Math.pow(x2, 2) + Math.pow(x1, 2) - Math.pow(y2, 2) + Math.pow(y1, 2);
-        double b = Math.pow(r3, 2) - Math.pow(r1, 2) - Math.pow(x3, 2) + Math.pow(x1, 2) - Math.pow(y3, 2) + Math.pow(y1, 2);
-
-        double x = (1 / delta) * (2 * a * (y1 - y3) - 2 * b * (y1 - y2));
-        double y = (1 / delta) * (2 * b * (x1 - x2) - 2 * a * (x1 - x2));
-
-        double x12 = x1 * x1;
-        double x22 = x2 * x2;
-        double x32 = x3 * x3;
-        double y12 = y1 * y1;
-        double y22 = y2 * y2;
-        double y32 = y3 * y3;
-        double r12 = r1 * r1;
-        double r22 = r2 * r2;
-        double r32 = r3 * r3;
-        double locy = ((x2 - x3)*((x22-x12)+(y22-y12)+(r12-r22))-(x1-x2) * ((x32-x22) + (y32-y22) + (r22-r32)))/(2 * ((y1-y2)*(x2-x3)-(y2-y3)*(x1-x2)));
-        double locx = ((y2 - y3)*((y22-y12)+(x22-x12)+(r12-r22))-(y1-y2) * ((y32-y22) + (x32-x22) + (r22-r32)))/(2 * ((x1-x2)*(y2-y3)-(x2-x3)*(y1-y2)));
-
-
-        Log.v("myapp", ""+locx);
-        Log.v("myapp", ""+locy);
-        Log.v("myapp", "" + r1 + ", " + r2 + ", " + r3);
-
-        x = Math.min(11, Math.max(0, (int) -locx));
-        y = Math.min(15, Math.max(0, (int) -locy));
-
-
-
-        updateLocation((int) x, (int) y);
-
-        Coord coord = new Coord((int) x, (int) y);
-
-        return coord;
-    }
+//    private Coord getCordinate(double x1, double y1, double r1,
+//                               double x2, double y2, double r2,
+//                               double x3, double y3, double r3) {
+//
+//
+//
+//        double delta = 4 * (((x1 - x2) * (y1 - y2)) - ((x1 - x3) * (y1 - y2)));
+//        double a = Math.pow(r2, 2) - Math.pow(r1, 2) - Math.pow(x2, 2) + Math.pow(x1, 2) - Math.pow(y2, 2) + Math.pow(y1, 2);
+//        double b = Math.pow(r3, 2) - Math.pow(r1, 2) - Math.pow(x3, 2) + Math.pow(x1, 2) - Math.pow(y3, 2) + Math.pow(y1, 2);
+//
+//        double x = (1 / delta) * (2 * a * (y1 - y3) - 2 * b * (y1 - y2));
+//        double y = (1 / delta) * (2 * b * (x1 - x2) - 2 * a * (x1 - x2));
+//
+//        double x12 = x1 * x1;
+//        double x22 = x2 * x2;
+//        double x32 = x3 * x3;
+//        double y12 = y1 * y1;
+//        double y22 = y2 * y2;
+//        double y32 = y3 * y3;
+//        double r12 = r1 * r1;
+//        double r22 = r2 * r2;
+//        double r32 = r3 * r3;
+//        double locy = ((x2 - x3)*((x22-x12)+(y22-y12)+(r12-r22))-(x1-x2) * ((x32-x22) + (y32-y22) + (r22-r32)))/(2 * ((y1-y2)*(x2-x3)-(y2-y3)*(x1-x2)));
+//        double locx = ((y2 - y3)*((y22-y12)+(x22-x12)+(r12-r22))-(y1-y2) * ((y32-y22) + (x32-x22) + (r22-r32)))/(2 * ((x1-x2)*(y2-y3)-(x2-x3)*(y1-y2)));
+//
+//
+//        Log.v("myapp", ""+locx);
+//        Log.v("myapp", ""+locy);
+//        Log.v("myapp", "" + r1 + ", " + r2 + ", " + r3);
+//
+//        x = Math.min(11, Math.max(0, (int) -locx));
+//        y = Math.min(15, Math.max(0, (int) -locy));
+//
+//
+//
+//        updateLocation((int) x, (int) y);
+//
+//        Coord coord = new Coord((int) x, (int) y);
+//
+//        return coord;
+//    }
 
     private Coord getLocation(double x1, double y1, double r1,
                               double x2, double y2, double r2,
                               double x3, double y3, double r3) {
-        double[][] positions = new double[][] { { x1, y1 }, {x2, y2 }, { x3, y3 } };
-        double[] distances = new double[] { r1, r2, r3 };
+        double[][] positions = new double[][]{{x1, y1}, {x2, y2}, {x3, y3}};
+        double[] distances = new double[]{r1, r2, r3};
 
         NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances), new LevenbergMarquardtOptimizer());
         LeastSquaresOptimizer.Optimum optimum = solver.solve();
 
 // the answer
         double[] centroid = optimum.getPoint().toArray();
-        Coord coord = new Coord((int)centroid[0], (int)centroid[1]);
+        Coord coord = new Coord((int) centroid[0], (int) centroid[1]);
+        int upOrDown = 0;
+        int leftOrRight = 0;
+        if (Math.abs(currentLocation.x - centroid[0]) > 2) {
+            if (currentLocation.x > centroid[0]) {
+                upOrDown = -1;
+            } else {
+                upOrDown = 1;
+            }
+        }
+        if (Math.abs(currentLocation.y - centroid[1]) > 2) {
+            if (currentLocation.y > centroid[1]) {
+                leftOrRight = -1;
+            } else {
+                leftOrRight = 1;
+            }
+        }
+        updateLocation(currentLocation.x + upOrDown, currentLocation.y + leftOrRight);
         return coord;
     }
 
