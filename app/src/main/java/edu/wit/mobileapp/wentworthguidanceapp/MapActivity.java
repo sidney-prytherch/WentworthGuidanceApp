@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.lang.*;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -78,11 +79,11 @@ public class MapActivity extends AppCompatActivity
             ScanResult sidney = null;
             for (ScanResult scanResult : results) {
                 switch (scanResult.SSID) {
-                    case "TT-Linksys":
-                        glenn = scanResult;
-                        break;
-                    case "nischal":
+                    case "linksys":
                         nischal = scanResult;
+                        break;
+                    case "Prythian":
+                        glenn = scanResult;
                         break;
                     case "sidney":
                         sidney = scanResult;
@@ -98,9 +99,12 @@ public class MapActivity extends AppCompatActivity
             }
 
             if (sidney != null && glenn != null && nischal != null) {
-                getLocation(0, 0, calculateDistance(sidney.frequency, sidney.level),
-                        5, 15, calculateDistance(glenn.frequency, glenn.level),
-                        11, 0, calculateDistance(nischal.frequency, nischal.level));
+                Log.v("hello" , "top-right: "+nischal.level);
+                Log.v("hello" , "top-left: "+sidney.level);
+                Log.v("hello" , "bottom-center: "+glenn.level);
+                getLocation(0, 0, calculateDistance(sidney.level, sidney.frequency),
+                        5, 15, calculateDistance( glenn.level, glenn.frequency),
+                        11, 0, calculateDistance(nischal.level, nischal.frequency ));
             } else {
 //                getLocation(0, 0, 8,
 //                        11, 0, 4,
@@ -118,7 +122,7 @@ public class MapActivity extends AppCompatActivity
     public void startTimer() {
         timer = new Timer();
         initializeTimerTask();
-        timer.schedule(timerTask, 5000, 10000);
+        timer.schedule(timerTask, 5000, 500);
     }
 
     public void initializeTimerTask() {
@@ -453,7 +457,10 @@ public class MapActivity extends AppCompatActivity
     }
 
     private double calculateDistance(double db, double freq) {
-        return 20 * (Math.log10(freq) + Math.abs(db)) - 27.55;
+//        Log.v("hello", ""+freq);
+//        return 20 * (3.38685552918 + Math.abs(db)) - 27.55;
+//        return(Math.pow(10.0, 27.55-(20 * 3.38685552918) + Math.abs(db))/20.0);
+        return ((15.0)/(-65+19)) * (db + 19);
     }
 
 //    private Coord getCordinate(double x1, double y1, double r1,
@@ -502,31 +509,74 @@ public class MapActivity extends AppCompatActivity
                               double x2, double y2, double r2,
                               double x3, double y3, double r3) {
         double[][] positions = new double[][]{{x1, y1}, {x2, y2}, {x3, y3}};
+        if (r1 < 0) {
+            r1 = 1;
+        }
+        if (r2 < 0) {
+            r2 = 1;
+        }
+        if (r3 < 0) {
+            r3 = 1;
+        }
         double[] distances = new double[]{r1, r2, r3};
+
+        Log.v("hello", "top-right: (" + x3 + ", " + y3 + "), distance/radius: " + r3);
+        Log.v("hello", "top-left: (" + x1 + ", " + y1 + "), distance/radius: " + r1);
+        Log.v("hello", "bottom-center: (" + x2 + ", " + y2 + "), distance/radius: " +  r2);
 
         NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(new TrilaterationFunction(positions, distances), new LevenbergMarquardtOptimizer());
         LeastSquaresOptimizer.Optimum optimum = solver.solve();
 
+
 // the answer
         double[] centroid = optimum.getPoint().toArray();
-        Coord coord = new Coord((int) centroid[0], (int) centroid[1]);
+        int x = Math.min(11, Math.max(0, (int) centroid[0]));
+        int y = Math.min(15, Math.max(0, (int) centroid[1]));
+
+        Log.v("hello", "coord: (" + x + ", " + y + ")");
+        Coord coord = new Coord(x, y);
         int upOrDown = 0;
         int leftOrRight = 0;
-        if (Math.abs(currentLocation.x - centroid[0]) > 2) {
-            if (currentLocation.x > centroid[0]) {
+        if (currentLocation == null) {
+            currentLocation = grid[10][15];
+        }
+//        if (Math.abs(currentLocation.x - x) > 2) {
+//        if (currentLocation.x != 0 && currentLocation.x != 11) {
+        if (Math.abs(currentLocation.x - x) > 3) {
+            if (currentLocation.x > x) {
+                upOrDown = -2;
+            } else {
+                upOrDown = 3;
+            }
+        } else {
+            if (currentLocation.x > x) {
                 upOrDown = -1;
             } else {
                 upOrDown = 1;
             }
         }
-        if (Math.abs(currentLocation.y - centroid[1]) > 2) {
-            if (currentLocation.y > centroid[1]) {
+//        }
+//        if (Math.abs(currentLocation.y - y) > 2 || (y == 0 || y == 15) && (currentLocation.y != 0 && currentLocation.y != 15)) {
+//        if (currentLocation.y != 0 && currentLocation.y != 15) {
+        if (Math.abs(currentLocation.y - y) > 3) {
+            if (currentLocation.y > y) {
+                leftOrRight = -2;
+            } else {
+                leftOrRight = 2;
+            }
+        } else {
+            if (currentLocation.y > y) {
                 leftOrRight = -1;
             } else {
                 leftOrRight = 1;
             }
         }
-        updateLocation(currentLocation.x + upOrDown, currentLocation.y + leftOrRight);
+
+         x = Math.min(11, Math.max(0, currentLocation.x + upOrDown));
+         y = Math.min(15, Math.max(0, currentLocation.y + leftOrRight));
+
+        updateLocation(x, y);
+//        updateLocation(x, y);
         return coord;
     }
 
